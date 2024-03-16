@@ -4,6 +4,13 @@ github.com/alphadose/haxmap
 # github.com/cespare/xxhash/v2 v2.2.0
 ## explicit; go 1.11
 github.com/cespare/xxhash/v2
+# github.com/dolthub/maphash v0.1.0
+## explicit; go 1.18
+github.com/dolthub/maphash
+# github.com/dolthub/swiss v0.2.1
+## explicit; go 1.18
+github.com/dolthub/swiss
+github.com/dolthub/swiss/simd
 # github.com/ironpark/skiplist v0.0.0-20230103051251-d63941a7d606
 ## explicit; go 1.18
 github.com/ironpark/skiplist

@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/alphadose/haxmap"
+	"github.com/dolthub/swiss"
 	"github.com/ironpark/skiplist"
 
 	"code.local/go-benchmarks/charhashmatrix"
@@ -137,6 +138,31 @@ func BenchmarkSets(b *testing.B) {
 
 					_, ok := m.Get(tt[j])
 					if ok {
+						b.FailNow()
+					}
+				}
+			}
+		})
+	}
+
+	{
+		m := swiss.NewMap[string, struct{}](uint32(size))
+
+		b.ResetTimer()
+		b.Run("dolthub/swiss", func(b *testing.B) {
+			for i := 0; i < b.N; i++ {
+				for j := range tt {
+					m.Put(tt[j], struct{}{})
+
+					if !m.Has(tt[j]) {
+						b.FailNow()
+					}
+				}
+
+				for j := range tt {
+					m.Delete(tt[j])
+
+					if m.Has(tt[j]) {
 						b.FailNow()
 					}
 				}
