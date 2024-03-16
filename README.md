@@ -7,7 +7,8 @@ go test -bench=. -benchmem
 
 ## `sets_test.go`
 ```
-BenchmarkSets/3DMatrix-16         	     970	   1141171 ns/op	  275072 B/op	     464 allocs/op
-BenchmarkSets/HashMatrix-16       	    7248	    160612 ns/op	   65280 B/op	    1020 allocs/op
-BenchmarkSets/MapSet-16           	   56374	     21092 ns/op	      74 B/op	       0 allocs/op
+BenchmarkSets/local/char-xxhash-matrix-16         	    6831	    173816 ns/op	   65280 B/op	    1020 allocs/op
+BenchmarkSets/local/char-matrix-3d-16             	     895	   1350956 ns/op	  269827 B/op	     448 allocs/op
+BenchmarkSets/ironpark/skiplist-16                	    6825	    169648 ns/op	   25695 B/op	     765 allocs/op
+BenchmarkSets/runtime/map-16                      	   55693	     21905 ns/op	      78 B/op	       0 allocs/op
 ```
