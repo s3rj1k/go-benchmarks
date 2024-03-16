@@ -6,6 +6,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/alphadose/haxmap"
 	"github.com/ironpark/skiplist"
 
 	"code.local/go-benchmarks/charhashmatrix"
@@ -109,6 +110,33 @@ func BenchmarkSets(b *testing.B) {
 					list.Remove(tt[j])
 
 					if _, ok := list.GetValue(tt[j]); ok {
+						b.FailNow()
+					}
+				}
+			}
+		})
+	}
+
+	{
+		m := haxmap.New[string, struct{}](uintptr(size))
+
+		b.ResetTimer()
+		b.Run("alphadose/haxmap", func(b *testing.B) {
+			for i := 0; i < b.N; i++ {
+				for j := range tt {
+					m.Set(tt[j], struct{}{})
+
+					_, ok := m.Get(tt[j])
+					if !ok {
+						b.FailNow()
+					}
+				}
+
+				for j := range tt {
+					m.Del(tt[j])
+
+					_, ok := m.Get(tt[j])
+					if ok {
 						b.FailNow()
 					}
 				}

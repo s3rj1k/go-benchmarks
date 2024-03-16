@@ -7,4 +7,7 @@ require (
 	github.com/ironpark/skiplist v0.0.0-20230103051251-d63941a7d606
 )
 
-require golang.org/x/exp v0.0.0-20240314144324-c7f7c6466f7f // indirect
+require (
+	github.com/alphadose/haxmap v1.3.1 // indirect
+	golang.org/x/exp v0.0.0-20240314144324-c7f7c6466f7f // indirect
+)
