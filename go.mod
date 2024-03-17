@@ -13,7 +13,13 @@ require (
 )
 
 require (
+	github.com/armon/go-radix v1.0.0 // indirect
+	github.com/arriqaaq/art v0.1.2 // indirect
 	github.com/dgryski/go-metro v0.0.0-20200812162917-85c65e2d0165 // indirect
 	github.com/dolthub/maphash v0.1.0 // indirect
+	github.com/emicklei/dot v0.16.0 // indirect
+	github.com/falmar/goradix v0.0.0-20230113174055-90e47463f13b // indirect
+	github.com/gammazero/radixtree v0.3.2 // indirect
+	github.com/snorwin/gorax v1.0.1 // indirect
 	golang.org/x/exp v0.0.0-20240314144324-c7f7c6466f7f // indirect
 )

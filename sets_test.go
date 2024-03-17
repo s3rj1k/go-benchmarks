@@ -8,10 +8,15 @@ import (
 
 	"github.com/Workiva/go-datastructures/trie/ctrie"
 	"github.com/alphadose/haxmap"
+	"github.com/armon/go-radix"
+	"github.com/arriqaaq/art"
 	"github.com/dghubble/trie"
 	"github.com/dolthub/swiss"
+	"github.com/falmar/goradix"
+	"github.com/gammazero/radixtree"
 	"github.com/ironpark/skiplist"
 	cuckoo "github.com/panmari/cuckoofilter"
+	"github.com/snorwin/gorax"
 
 	"code.local/go-benchmarks/charhashmatrix"
 	"code.local/go-benchmarks/charmatrix3d"
@@ -255,6 +260,141 @@ func BenchmarkSets(b *testing.B) {
 
 					val := pt.Get(tt[j])
 					if val != nil {
+						b.FailNow()
+					}
+				}
+			}
+		})
+	}
+
+	{
+		radix := goradix.New(false)
+
+		b.ResetTimer()
+		b.Run("falmar/goradix", func(b *testing.B) {
+			for i := 0; i < b.N; i++ {
+				for j := range tt {
+					radix.Insert(tt[j], struct{}{})
+
+					_, err := radix.LookUp(tt[j])
+					if err != nil {
+						b.FailNow()
+					}
+				}
+
+				for j := range tt {
+					radix.Remove(tt[j])
+
+					_, err := radix.LookUp(tt[j])
+					if err == nil {
+						b.FailNow()
+					}
+				}
+			}
+		})
+	}
+
+	{
+		tree := art.NewTree()
+
+		b.ResetTimer()
+		b.Run("arriqaaq/art", func(b *testing.B) {
+			for i := 0; i < b.N; i++ {
+				for j := range tt {
+					tree.Insert([]byte(tt[j]), struct{}{})
+
+					val := tree.Search([]byte(tt[j]))
+					if val == nil {
+						b.FailNow()
+					}
+				}
+
+				for j := range tt {
+					tree.Delete([]byte(tt[j]))
+
+					val := tree.Search([]byte(tt[j]))
+					if val != nil {
+						b.FailNow()
+					}
+				}
+			}
+		})
+	}
+
+	{
+		rt := radixtree.New()
+
+		b.ResetTimer()
+		b.Run("gammazero/radixtree", func(b *testing.B) {
+			for i := 0; i < b.N; i++ {
+				for j := range tt {
+					rt.Put(tt[j], struct{}{})
+
+					_, ok := rt.Get(tt[j])
+					if !ok {
+						b.FailNow()
+					}
+				}
+
+				for j := range tt {
+					rt.Delete(tt[j])
+
+					_, ok := rt.Get(tt[j])
+					if ok {
+						b.FailNow()
+					}
+				}
+			}
+		})
+	}
+
+	{
+		t := gorax.New()
+
+		b.ResetTimer()
+		b.Run("snorwin/gorax", func(b *testing.B) {
+			for i := 0; i < b.N; i++ {
+				for j := range tt {
+					t.Insert(tt[j], struct{}{})
+
+					_, ok := t.Get(tt[j])
+					if !ok {
+						b.FailNow()
+					}
+				}
+
+				for j := range tt {
+					t.Delete(tt[j])
+
+					_, ok := t.Get(tt[j])
+					if ok {
+						b.FailNow()
+					}
+				}
+			}
+		})
+	}
+
+	{
+		r := radix.New()
+
+		b.ResetTimer()
+		b.Run("armon/go-radix", func(b *testing.B) {
+			for i := 0; i < b.N; i++ {
+				for j := range tt {
+					r.Insert(tt[j], struct{}{})
+
+					_, ok := r.Get(tt[j])
+					if !ok {
+						b.FailNow()
+					}
+				}
+
+				for j := range tt {
+					r.Delete(tt[j])
+
+					_, ok := r.Get(tt[j])
+					if ok {
 						b.FailNow()
 					}
 				}
