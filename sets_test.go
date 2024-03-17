@@ -6,6 +6,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/Workiva/go-datastructures/trie/ctrie"
 	"github.com/alphadose/haxmap"
 	"github.com/dolthub/swiss"
 	"github.com/ironpark/skiplist"
@@ -21,6 +22,37 @@ func BenchmarkSets(b *testing.B) {
 	tt := make([]string, size)
 	for i := range tt {
 		tt[i] = random.String(rand.Intn(size)+1, random.KubernetesNamesAllowedChars)
+	}
+
+	{
+		ct := ctrie.New(nil)
+
+		b.ResetTimer()
+		b.Run("Workiva/go-datastructures/trie/ctrie", func(b *testing.B) {
+			for i := 0; i < b.N; i++ {
+				for j := range tt {
+					bytes := []byte(tt[j])
+
+					ct.Insert(bytes, struct{}{})
+
+					_, ok := ct.Lookup(bytes)
+					if !ok {
+						b.FailNow()
+					}
+				}
+
+				for j := range tt {
+					bytes := []byte(tt[j])
+
+					_, _ = ct.Remove(bytes)
+
+					_, ok := ct.Lookup(bytes)
+					if ok {
+						b.FailNow()
+					}
+				}
+			}
+		})
 	}
 
 	{

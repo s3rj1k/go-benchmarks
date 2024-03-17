@@ -3,6 +3,7 @@ module code.local/go-benchmarks
 go 1.22.1
 
 require (
+	github.com/Workiva/go-datastructures v1.1.1
 	github.com/alphadose/haxmap v1.3.1
 	github.com/cespare/xxhash/v2 v2.2.0
 	github.com/dolthub/swiss v0.2.1
