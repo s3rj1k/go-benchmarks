@@ -18,6 +18,7 @@ import (
 	cuckoo "github.com/panmari/cuckoofilter"
 	"github.com/snorwin/gorax"
 
+	"code.local/go-benchmarks/charbyteshashmatrix"
 	"code.local/go-benchmarks/charhashmatrix"
 	"code.local/go-benchmarks/charmatrix3d"
 	"code.local/go-benchmarks/random"
@@ -67,6 +68,37 @@ func BenchmarkSets(b *testing.B) {
 
 		b.ResetTimer()
 		b.Run("local/char-xxhash-matrix", func(b *testing.B) {
+			for i := 0; i < b.N; i++ {
+				for j := range tt {
+					err := matrixHash.Set(tt[j])
+					if err != nil {
+						b.FailNow()
+					}
+
+					if !matrixHash.Contains(tt[j]) {
+						b.FailNow()
+					}
+				}
+
+				for j := range tt {
+					err := matrixHash.Unset(tt[j])
+					if err != nil {
+						b.FailNow()
+					}
+
+					if matrixHash.Contains(tt[j]) {
+						b.FailNow()
+					}
+				}
+			}
+		})
+	}
+
+	{
+		matrixHash := charbyteshashmatrix.NewMatrix()
+
+		b.ResetTimer()
+		b.Run("local/char-bytes-hash-matrix", func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
 				for j := range tt {
 					err := matrixHash.Set(tt[j])
