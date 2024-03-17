@@ -10,6 +10,7 @@ import (
 	"github.com/alphadose/haxmap"
 	"github.com/dolthub/swiss"
 	"github.com/ironpark/skiplist"
+	cuckoo "github.com/panmari/cuckoofilter"
 
 	"code.local/go-benchmarks/charhashmatrix"
 	"code.local/go-benchmarks/charmatrix3d"
@@ -195,6 +196,37 @@ func BenchmarkSets(b *testing.B) {
 					m.Delete(tt[j])
 
 					if m.Has(tt[j]) {
+						b.FailNow()
+					}
+				}
+			}
+		})
+	}
+
+	{
+		cf := cuckoo.NewFilter(uint(size))
+
+		b.ResetTimer()
+		b.Run("panmari/cuckoofilter", func(b *testing.B) {
+			for i := 0; i < b.N; i++ {
+				for j := range tt {
+					bytes := []byte(tt[j])
+
+					cf.Insert(bytes)
+
+					ok := cf.Lookup(bytes)
+					if !ok {
+						b.FailNow()
+					}
+				}
+
+				for j := range tt {
+					bytes := []byte(tt[j])
+
+					cf.Delete(bytes)
+
+					ok := cf.Lookup(bytes)
+					if ok {
 						b.FailNow()
 					}
 				}
