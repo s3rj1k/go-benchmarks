@@ -8,6 +8,7 @@ import (
 
 	"github.com/Workiva/go-datastructures/trie/ctrie"
 	"github.com/alphadose/haxmap"
+	"github.com/dghubble/trie"
 	"github.com/dolthub/swiss"
 	"github.com/ironpark/skiplist"
 	cuckoo "github.com/panmari/cuckoofilter"
@@ -227,6 +228,33 @@ func BenchmarkSets(b *testing.B) {
 
 					ok := cf.Lookup(bytes)
 					if ok {
+						b.FailNow()
+					}
+				}
+			}
+		})
+	}
+
+	{
+		pt := trie.NewPathTrie()
+
+		b.ResetTimer()
+		b.Run("dghubble/trie", func(b *testing.B) {
+			for i := 0; i < b.N; i++ {
+				for j := range tt {
+					pt.Put(tt[j], struct{}{})
+
+					val := pt.Get(tt[j])
+					if val == nil {
+						b.FailNow()
+					}
+				}
+
+				for j := range tt {
+					pt.Delete(tt[j])
+
+					val := pt.Get(tt[j])
+					if val != nil {
 						b.FailNow()
 					}
 				}
